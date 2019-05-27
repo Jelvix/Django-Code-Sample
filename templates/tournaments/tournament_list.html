@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+    <h2 id="list">{% trans 'Matches' %}</h2>
+    <hr>
+    <hr>
+    {% for obj in object_list %}
+        <div id="list">
+            <h3><a href="{% url 'tournament_detail' obj.id %}"
+                   class="tournament-title">{{ obj.game_name.game_title }}</a></h3>
+            {#            <h6>{{ obj.date_added }}</h6>#}
+            <h6>
+                {% trans 'Players: ' %}
+                {% for player in obj.players.all %}
+                    {% if forloop.first %}
+                        {{ player }}
+                    {% else %}
+                        vs {{ player }}
+                    {% endif %}
+                {% endfor %}
+            </h6>
+            <h4>{% trans 'Winner: ' %}{{ obj.winner }}</h4>
+        </div>
+        <hr>
+    {% endfor %}
+{% endblock %}

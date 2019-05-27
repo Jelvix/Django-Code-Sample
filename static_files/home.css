@@ -1,0 +1,53 @@
+body {
+    background-image:url("img/back.jpg");
+    padding: 1%;
+    background-attachment: scroll;
+    
+}
+
+#list {
+    background-color: rgba(255, 196, 147, 0.7);
+    border-radius: 50%;
+    text-align: center;
+    font-size: 24px;
+    font-family: 'Arial';
+}
+
+h2, h1 a {
+    color: rgb(252, 5, 5);
+    font-family: 'Lobster';
+}
+
+h1 a:visited {
+    color: #3d015f;
+}
+
+div a {
+    color: #86062d;
+}
+
+div a:visited {
+    color: #330311;
+}
+#comments {
+    font-family: 'Lobster';
+    color: #86062d;
+    background-color: rgba(131, 198, 253, 0.548);
+    font-size: medium;
+}
+
+#post {
+    font-family: 'Times New Roman', Times, serif;
+    color: #330311;
+    border-radius: 5%;
+    background-color: rgba(85, 178, 255, 0.699);
+
+}
+
+#post h1{
+    text-align: center;
+}
+
+#post_text {
+    font: large italic;
+}

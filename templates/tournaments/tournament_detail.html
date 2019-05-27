@@ -1,0 +1,34 @@
+{#{% extends 'base.html' %}#}
+{% load i18n %}
+
+{#{% block content %}#}
+<div>
+    <h3>{{ object.game_name.game_title }}</h3>
+    {% if object.event %}
+        <p>
+            {{ object.event }}
+        </p>
+    {% endif %}
+    <p>
+        {% for player in object.players.all %}
+            {% if forloop.first %}
+                {{ player }}
+            {% else %}
+                vs {{ player }}
+            {% endif %}
+        {% endfor %}
+    </p>
+    {% if object.match_score.first %}
+        {% for score in object.match_score.all %}
+            {% if forloop.first %}
+                {{ score }}
+            {% else %}
+                : {{ score }}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <p>
+        {{ object.winner }} {% trans 'win.' %}
+    </p>
+</div>
+{#{% endblock %}#}

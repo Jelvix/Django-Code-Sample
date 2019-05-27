@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <div>
+        <h1 id="list">{% trans 'Tournaments' %}</h1>
+    <hr>
+    </div>
+    {% for event in object_list %}
+        <div class="row">
+            <div class="col-lg-12">
+                <h3 class="col-lg-12">{{ event.game.game_title }}</h3>
+            </div>
+            <div class="col-lg-12 event">
+                <h7 class="col-lg-6" style="text-align: right">{% trans 'Start: ' %}{{ event.date_start }}</h7>
+                <h7 class="col-lg-6" style="text-align: left">{% trans 'Finish: ' %}{{ event.date_finish }}</h7>
+            </div>
+            <div class="col-lg-12 event">
+                <span class="col-lg-6" style="text-align: right">
+                <a class="btn btn-outline-dark" id="show_members" href="#">{% trans "Show members" %}</a>
+                <a class="btn btn-outline-danger" id="hide_members">{% trans 'Hide members' %}</a>
+
+            </span>
+                <span class="col-lg-6 content-right" style="text-align: left">
+                    <a href="{% url 'event_detail' event.id %}"
+                       class="btn btn-outline-dark detail_event">{% trans "See details" %}</a>
+                </span>
+                <p></p>
+            </div>
+
+            <div id="event_members" class="event_members col-lg-12">
+                <h5 class="col-lg-12" >
+                    {% for player in event.members.all %}
+                        <span id="member-name" class="btn btn-outline-light">{{ player }}</span>
+                    {% endfor %}
+                </h5>
+
+            </div>
+        </div>
+        <hr>
+    {% endfor %}
+{% endblock %}

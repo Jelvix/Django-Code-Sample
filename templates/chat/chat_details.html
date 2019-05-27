@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+
+    <h2 class="section-heading mb-5" data-room="{{ object.id }}">
+        <span class="section-heading-lower">{{ object.title }} </span>
+    </h2>
+    <div id="scroll" class="pre-scrollable" style="height: 400px;  overflow-y: revert;">
+
+        {% for message in object.room_messages.all %}
+            <p class="post_text"
+               {% if user.id == message.sender.id %}
+                id="message-mine"
+               {% else %}
+                    id="message-alien"
+               {% endif %}>
+                <strong>{{ message.text }}</strong><br>
+                <i>{{ message.sender }}</i><br>
+                {{ message.creation_date|date:"N d, Y, f.A" }}
+            </p>
+        {% endfor %}
+        <p id="finish"></p>
+    </div>
+    <div id="msgArea"></div>
+    <hr>
+    <div >
+        <form class="col-lg-11">
+            <input type="hidden" name="sender_id" value="{{ user.id }}">
+            <textarea name="message" id="message" cols="60" rows="3" style="width: 90%"></textarea>
+        </form>
+    </div>
+
+    <button id="btnSubmit" class="glyphicon glyphicon-send btn-outline-dark col-lg-0.5"
+            style="height: 24px; margin: 15px;" ></button>
+    <div class="col-lg-1.5"></div>
+    <script type="text/javascript" src="{% static 'js/chats_script.js' %}"></script>
+{% endblock %}

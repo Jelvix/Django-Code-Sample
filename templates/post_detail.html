@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+    {% if user.is_staff or user.is_superuser %}
+        <div class="text-right"><a href="{% url 'edit_post' object.pk %}"
+                                   class="btn btn-outline-secondary glyphicon glyphicon-pencil"></a></div>
+    {% endif %}
+    <h2 class="section-heading mb-5">
+        <span class="section-heading-lower">{{ object.title }} </span>
+
+    </h2>
+    <p><h3>
+    <span class="section-heading-upper">{% trans 'GAME: ' %}{{ object.game.game_name }}</span>
+</h3></p>
+    <p id="post_text">{% autoescape off %}{{ object.text }}{% endautoescape %}</p>
+    {% if object.players is not None %}
+        <p id="post_text">{% trans 'PLAYERS:' %}
+            {{ object.game.players }}
+        </p>
+    {% endif %}
+    {% if object.game.winner is not None %}
+        <p id="post_text">{% trans 'WINNER:' %} {{ object.game.winner }}</p>
+    {% endif %}
+    <div id="like" class="text-right" >
+        <span id="like-counter">{{ object.likes.count }}</span>{% trans ':likes' %}
+        {% if user.is_authenticated %}
+            <button type="button" class="btn btn-outline-danger col-lg-0.5 glyphicon glyphicon-heart"
+                    data-url="{% url 'like' object.likes.content_type.id object.id %}" data-id="likes"></button>
+        {% endif %}
+    </div>
+    </div>
+    <hr>
+    <div class="comments-block">
+    {% for comment in comments %}
+        <div class="commets-posts" id="comments" {% if comment.likes.count >= 10 %}style="background-color: #953b39"{% endif %}>
+            <strong class="col-lg-6 text-left">{% trans 'Author:' %}{{ comment.author }}</strong>
+            <div class="text-right col-lg-6" style="left:25px">{% trans 'Created:' %} {{ comment.date_added }}</div>
+            <br>
+
+            <br id="like">
+            <span class="col-lg-10 text-left">
+
+                    {{ comment.comment|linebreaks }}
+                    </span>
+
+            <div id="like">
+
+                {% if user.is_authenticated %}
+                    <button type="button" class="btn btn-outline-danger col-lg-0.5 glyphicon glyphicon-heart"
+                            data-url="{% url 'like' comment.likes.content_type.id comment.id %}"
+                            data-id="likes"></button>
+                    {% if user.id == comment.author.id %}
+                        <button type="button" class="btn btn-outline-secondary col-lg-0.5 glyphicon glyphicon-pencil"
+                                data-url="{% url 'comment_edition' comment.id %}"
+                                id="comment-edit"></button>
+                        <a href="{% url 'delete_post_comment' comment.id %}"
+                           class="btn btn-outline-dark col-lg-0.5 glyphicon glyphicon-remove"></a>
+                    {% endif %}
+                    <span class="col-lg-1.5 text-right">
+                        <span id="like-counter">{{ comment.likes.count }}</span>:{% trans 'likes' %}
+                    </span>
+                {% endif %}
+            </div>
+            <br>
+        </div>
+    {% empty %}
+        <p>{% trans 'No comments here yet ◕_◕' %}</p>
+    {% endfor %}</div>
+    <div class="commets-posts" id="add_comment" style="margin-left: 5px">
+        {% if user.is_authenticated %}
+            <h4 style="color: lavenderblush">{% trans 'New comment' %}</h4>
+            <form method="POST" class="post-form" action="{% url 'post_comment' object.id %}">{% csrf_token %}
+                <span class="col-lg-11 left" style="padding-left: 0px">{{ form }}</span>
+                <button type="submit" class="save glyphicon glyphicon-send btn-outline-light col-lg-1"
+                        id="comment-btn-send"
+                        style=""></button>
+
+            </form>
+        {% endif %}
+    </div>
+
+{% endblock %}

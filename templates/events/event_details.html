@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load event_table_matches %}
+
+{% block content %}
+
+    <div class="title-event">
+        <h2>
+            <span class="section-heading-lower">{{ object.game.game_title }} </span>
+        </h2>
+    </div>
+    <div class="event-date">
+        <h6>
+            ({{ object.date_start }} — {{ object.date_finish }})
+        </h6>
+    </div>
+    <div>
+        <table class="event-matches-table" style="width: 100%">
+            <tr class="event-members-list-detail">
+                <td></td>
+                {% for each in object.members.all %}
+                    <td class="members-list-detail">{{ each }}</td>
+                {% endfor %}
+            </tr>
+            {% for each in object.members.all %}
+                <tr class="rate-members-event-list">
+                    <td>
+                        {{ each }}
+                    </td>
+                    {% for players in object.members.all %}
+                        <a class="btn-outline-dark" id="match-result">
+                            <td class="btn-outline-dark"
+                                {% match_id each.id players.id object.id as matchId %}
+                                {% if matchId and each.id != players.id %}
+                                data-btn="modal"
+                                data-target="#exampleModal"
+                                data-url="{% url 'tournament_detail' matchId %}"
+                                {% endif %}
+                            >{% win_fail_none each.id players.id object.id %}
+
+                            </td>
+                        </a>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}

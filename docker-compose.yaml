@@ -1,0 +1,67 @@
+version: '3.0'
+
+services:
+  db:
+    image: postgres:11.1
+    ports:
+      - "5432:5432"
+
+  web:
+    container_name: web_python_test_dev
+    build: .
+    command: >
+      bash -c "pip install --upgrade pip &&
+      pip install -r requirements_dev.txt &&
+      python3 manage.py migrate &&
+      python3 manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=testcms.settings.dev
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PY_AUTORELOAD=1
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    links:
+      - "redis:redis"
+
+  redis:
+    restart: always
+    image: redis:latest
+
+  celery:
+    build: .
+    volumes:
+      - .:/code
+    environment:
+      - DJANGO_SETTINGS_MODULE=testcms.settings.dev
+      - PY_AUTORELOAD=1
+      - PYTHONUNBUFFERED=1
+    command: /bin/bash -c "pip install -r requirements.txt && make celery"
+
+  celery_beat:
+    build: .
+    volumes:
+      - .:/code
+    environment:
+      - DJANGO_SETTINGS_MODULE=testcms.settings.dev
+      - PY_AUTORELOAD=1
+      - PYTHONUNBUFFERED=1
+    command: /bin/bash -c "pip install -r requirements.txt && make celery_beat"
+
+  flower:
+    build: .
+    volumes:
+      - .:/code
+    environment:
+      - DJANGO_SETTINGS_MODULE=testcms.settings.dev
+      - PY_AUTORELOAD=1
+      - PYTHONUNBUFFERED=1
+    ports:
+      - "5555:5555"
+    command: /bin/bash -c "pip install -r requirements.txt && flower -A testcms.celery_config --port=5555"
+

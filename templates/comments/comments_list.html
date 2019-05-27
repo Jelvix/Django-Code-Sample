@@ -1,0 +1,6 @@
+{% block content%}
+{% for obj in object_list%}
+<div>{{obj.comment}}</div>
+<div>{{obj.num_likes}} {{obj.author}}  {{obj.created_at}}</div>
+{% endfor %}
+{% endblock %}

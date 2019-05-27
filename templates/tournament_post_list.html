@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+
+    <h2 id="list">{% trans 'Posts' %}</h2>
+    <hr>
+    <p style="width: 80%; margin-left: 10%; margin-right: 10%;">
+    {% for obj in filter.qs %}
+        {% for tag in obj.tags.all %}
+            <a class="btn btn-outline-light" style="color: #77423b;  margin-bottom: 1em"
+               href="{{ request.path }}?tag={{ tag.tag_name }}"> {{ tag }}</a>
+        {% endfor %}
+    {% endfor %}
+    </p>
+    <hr>
+
+    <form action="" method="get">
+
+        {{ filter.form.as_p }}
+        <input type="submit"/>
+    </form>
+
+    {% for obj in filter.qs %}
+
+        <div id="list">
+            <div id="like">
+                <p>
+                <p><h2><a href="{% url 'posts_detail' obj.id %}" class="url"> <strong>{{ obj.title }}</strong></a></h2>
+                </p>
+                <p>
+                    {% for tag in obj.tags.all %}
+                        {% if forloop.first %}
+                            <a class="btn btn-outline-secondary " id="btn-tag"
+                               href="{{ request.path }}?tag={{ tag.tag_name }}"> {{ tag }}</a>
+                        {% else %}
+                            <a class="btn btn-outline-secondary"
+                               href="{{ request.path }}?tag={{ tag.tag_name }}"> {{ tag }}</a>
+
+
+                        {% endif %}
+                    {% endfor %}
+                </p>
+                {% if user.is_authenticated %}
+                    <button type="button" class="btn btn-outline-danger col-lg-0.5 glyphicon glyphicon-heart"
+                            data-url="{% url 'like' obj.likes.content_type.id obj.id %}" data-id="likes">
+                    </button>
+                {% endif %}
+                <span class="row" style="width: 15%; margin-left: 80%">
+                <span style="margin-right: 1em">{{ obj.tournament_post.count }} {% trans ':comments ' %}</span>
+                        <span><span id="like-counter"> {{ obj.likes.count }}</span> {% trans ':likes' %}</span>
+                </span>
+                <hr>
+
+                </p>
+
+            </div>
+        </div>
+        <br>
+    {% endfor %}
+
+{% endblock %}
+<script>
+    $("#formButton").click(function () {
+        $("#form1").toggle();
+    });
+</script>

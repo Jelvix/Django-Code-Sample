@@ -1,0 +1,15 @@
+{% load i18n %}
+
+<div id="comment-edit-form" class="tab-content" style="height: 80px">
+    <form method="POST" class="col-lg-10" style="height: 40px">
+        {% csrf_token %}
+        {{ form.as_p }}
+    </form>
+    <span class="col-lg-1 left">
+    <button class="save glyphicon glyphicon-send btn-outline-dark" id="comment-btn-send-ed"
+        data-url="{% url 'comment_edition' comment.id %}" ></button>
+    <button class="cancel glyphicon glyphicon-remove btn-outline-dark " id="comment-btn-cancel"></button>
+    </span>
+    <br>
+
+</div>

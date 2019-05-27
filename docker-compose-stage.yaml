@@ -1,0 +1,57 @@
+version: '3.0'
+
+services:
+  db:
+    container_name: python_test_db_stage
+    image: postgres:11.1
+    command: postgres
+
+  web:
+    build: .
+    command: >
+      bash -c "pip install -r requirements.txt &&
+      python3 manage.py migrate &&
+      python manage.py raven test &&
+      python3 manage.py collectstatic --noinput &&
+      uwsgi --http 0.0.0.0:8000 --module 'django.core.wsgi:get_wsgi_application()' --processes 2 --static-map /static=/code/static"
+    container_name: web_python_test_stage
+    environment:
+      - DJANGO_SETTINGS_MODULE=testcms.settings.stage
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - SECRET_KEY=extremely_SECRET_key
+      - PY_AUTORELOAD=1
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    links:
+      - "redis:redis"
+  redis:
+    restart: always
+    image: redis:latest
+
+  celery:
+    build: .
+    volumes:
+      - .:/code
+    environment:
+      - DJANGO_SETTINGS_MODULE=testcms.settings.stage
+      - SECRET_KEY=extremely_SECRET_key
+      - PY_AUTORELOAD=1
+      - PYTHONUNBUFFERED=1
+    command: /bin/bash -c "pip install -r requirements.txt && make celery"
+
+  celery_beat:
+    build: .
+    volumes:
+      - .:/code
+    environment:
+      - DJANGO_SETTINGS_MODULE=testcms.settings.stage
+      - SECRET_KEY=extremely_SECRET_key
+      - PY_AUTORELOAD=1
+      - PYTHONUNBUFFERED=1
+    command: /bin/bash -c "pip install -r requirements.txt && make celery_beat"

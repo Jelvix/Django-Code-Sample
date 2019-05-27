@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content%}
+
+<h2 id="list">{% trans 'Chat rooms' %}</h2>
+
+    {% for object in object_list%}
+        <div id="list">
+            <a href="{% url 'room_details' object.pk%}">
+                <h3>{{object.title}}</h3>
+            <p>{% trans 'Number of messages:' %} {{ object.room_messages.count }}</p>
+            </a>
+        </div>
+    {% endfor %}
+{% endblock %}
