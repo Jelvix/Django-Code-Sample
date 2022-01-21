@@ -6,7 +6,7 @@ psycopg2-binary ==2.7.6.1
 Pillow == 5.3.0
 channels==1.1.8
 daphne==1.4.2
-ipython==7.1.1
+ipython==7.16.3
 
 asgi-redis==1.4.3
 django-rest-swagger==2.2.0
